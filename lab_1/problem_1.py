@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 
 # Function definition
 def f(x):
+    return x**3 - 6*x**2 + 11*x -6.1
+    return x**10 -1
     return 225 + 82*x - 90*x**2 + 44*x**3 - 8*x**4 + 0.7*x**5
     #return x*x*x*x*x*x*x*x*x*x -1
 
@@ -28,7 +30,8 @@ def Bisection(a, b, eps_relative):
     k = 0
     step = FindStep(a, b, eps_relative)
     
-    while k <= step:
+    #while k <= step:
+    while True:
         k += 1
         xr = (a + b) / 2
         fxr = f(xr)
@@ -70,27 +73,21 @@ def Bisection(a, b, eps_relative):
     abs_errors = [row[5] if row[5] is not None else 0 for row in iteration_data]
     iterations = [row[0] for row in iteration_data]
     
-    plt.figure(figsize=(8,5))
-    plt.plot(iterations, abs_errors, marker='o')
-    plt.xlabel('Iteration')
-    plt.ylabel('Approximate Relative Error (%)')
-    plt.title('Convergence of Bisection Method')
-    plt.grid(True)
-    plt.show()
+    # plt.figure(figsize=(8,5))
+    # plt.plot(iterations, abs_errors, marker='o')
+    # plt.xlabel('Iteration')
+    # plt.ylabel('Approximate Relative Error (%)')
+    # plt.title('Convergence of Bisection Method')
+    # plt.grid(True)
+    # plt.show()
+    
+    #return iteration_data
+
     
     return xr
 
-# # Helper function to get a very accurate approximate root for error calculation
-# def BisectionApproxRoot(a, b, tol):
-#     while (b - a)/2 > tol:
-#         c = (a + b)/2
-#         if f(a) * f(c) < 0:
-#             b = c
-#         else:
-#             a = c
-#     return (a + b)/2
 
 # Run the bisection method with initial guesses and relative error < 0.05%
-root = Bisection(-1.2, -1.0, 0.0005)
+root = Bisection(1, 4, 0.0005)
 #root = Bisection (0, 1.3, 0.02)
 
