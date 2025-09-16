@@ -73,13 +73,13 @@ def Bisection(a, b, eps_relative):
     abs_errors = [row[5] if row[5] is not None else 0 for row in iteration_data]
     iterations = [row[0] for row in iteration_data]
     
-    # plt.figure(figsize=(8,5))
-    # plt.plot(iterations, abs_errors, marker='o')
-    # plt.xlabel('Iteration')
-    # plt.ylabel('Approximate Relative Error (%)')
-    # plt.title('Convergence of Bisection Method')
-    # plt.grid(True)
-    # plt.show()
+    plt.figure(figsize=(8,5))
+    plt.plot(iterations, abs_errors, marker='o')
+    plt.xlabel('Iteration')
+    plt.ylabel('Approximate Relative Error (%)')
+    plt.title('Convergence of Bisection Method')
+    plt.grid(True)
+    plt.show()
     
     #return iteration_data
 
