@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 
 # Function definition
 def f(x):
+    return -0.5*x*x + 2.5 * x + 4.5
     return x**3 - 6*x**2 + 11*x -6.1
     return x**10 -1
     return 225 + 82*x - 90*x**2 + 44*x**3 - 8*x**4 + 0.7*x**5
@@ -88,6 +89,6 @@ def Bisection(a, b, eps_relative):
 
 
 # Run the bisection method with initial guesses and relative error < 0.05%
-root = Bisection(1, 4, 0.0005)
+root = Bisection(5, 10, 0.0005)
 #root = Bisection (0, 1.3, 0.02)
 

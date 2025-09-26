@@ -64,3 +64,4 @@ df = lambda x: 4*x**3 - 5
 
 # Run Newton-Raphson
 newton_raphson(f, df, x0=1)
+
