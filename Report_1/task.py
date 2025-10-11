@@ -7,11 +7,17 @@ def f(h):
 def df(h):
     return 3*h**2 - 10 - (5/2)*np.exp(-h/2)
 
+def isBisectionApplicable(a, b):
+    return f(a) * f(b) < 0
+
 # ---------------- Bisection ----------------
 def Bisection(a, b, eps_relative):
+    if not isBisectionApplicable(a, b):
+        print("f(a) * f(b) >= 0. No root guaranteed in [a, b].")
+        return None
     print("\n=== Bisection Method ===")
-    print(f"{'Iter':<6} {'xl':<10} {'xu':<10} {'xr':<10} {'f(xr)':<12} {'ea(%)':<10}")
-    print("-"*60)
+    print(f"{'Iter':<6} {'xl':>10} {'xu':>10} {'xr':>10} {'f(xr)':>12} {'ea(%)':>12}")
+    print("-"*65)
 
     iteration_data = []
     xr_old = a
@@ -24,8 +30,7 @@ def Bisection(a, b, eps_relative):
         ea = abs((xr - xr_old)/xr) * 100
         iteration_data.append([k, ea])
         
-        print(f"{k:<6d} {a:.5f}   {b:.5f}   {xr:.5f}   {fxr:.5f}   {ea:.5f}")
-        
+        print(f"{k:<6d} {a:>10.5f} {b:>10.5f} {xr:>10.5f} {fxr:>12.5f} {ea:>12.5f}")        
         if f(xr) == 0 or ea < eps_relative:
             break
         if f(a) * fxr < 0:
@@ -38,8 +43,8 @@ def Bisection(a, b, eps_relative):
 # ---------------- False Position ----------------
 def FalsePosition(a, b, eps_relative):
     print("\n=== False Position Method ===")
-    print(f"{'Iter':<6} {'xl':<10} {'xu':<10} {'xr':<10} {'f(xr)':<12} {'ea(%)':<10}")
-    print("-"*60)
+    print(f"{'Iter':>6} {'xl':>10} {'xu':>14} {'xr':>10} {'f(xr)':>10} {'ea(%)':>12}")
+    print("-"*70)
 
     iteration_data = []
     xr_old = b
@@ -53,9 +58,9 @@ def FalsePosition(a, b, eps_relative):
         if ea is not None:
             iteration_data.append([k, ea])
         
-        ea_str = f"{ea:.5f}" if ea is not None else "N/A"
-        print(f"{k:<6d} {a:.5f}   {b:.5f}   {xr:.5f}   {fxr:.5f}   {ea_str}")
-        
+        ea_str = f"{ea:>12.5f}" if ea is not None else f"{'N/A':>12}"
+        print(f"{k:<6d} {a:>12.5f} {b:>14.5f} {xr:>10.5f} {fxr:>12.5f} {ea_str}")
+
         if ea is not None and ea < eps_relative:
             break
         if fa * fxr < 0:
@@ -68,8 +73,8 @@ def FalsePosition(a, b, eps_relative):
 # ---------------- Newton-Raphson ----------------
 def newton_raphson(x0, tol=0.001, max_iter=100):
     print("\n=== Newton-Raphson Method ===")
-    print("{:<6} {:<10} {:<12} {:<12} {:<10}".format("Iter", "x", "f(x)", "f'(x)", "ea(%)"))
-    print("-"*60)
+    print(f"{'Iter':>6} {'x':>12} {'f(x)':>14} {'f′(x)':>14} {'ea(%)':>12}")
+    print("-"*70)
 
     ea_list, iter_list = [], []
     x = x0
@@ -82,18 +87,17 @@ def newton_raphson(x0, tol=0.001, max_iter=100):
         ea_list.append(ea)
         iter_list.append(i)
         
-        print(f"{i:<6d} {x_new:.5f}   {fx:.5f}   {dfx:.5f}   {ea:.5f}")
-        
+        print(f"{i:>6d} {x_new:>12.5f} {fx:>14.5f} {dfx:>14.5f} {ea:>12.5f}")
         if ea < tol:
             break
         x = x_new
     return iter_list, ea_list
 
 # ---------------- Secant ----------------
-def secant_method(x0, x1, tol=0.001, max_iter=100):
+def secant_method(x0, x1, tol=0.001, max_iter=500):
     print("\n=== Secant Method ===")
-    print(f"{'Iter':<6} {'x0':<10} {'x1':<10} {'x2':<10} {'f(x2)':<12} {'ea(%)':<10}")
-    print("-"*70)
+    print(f"{'Iter':>6} {'x0':>12} {'x1':>12} {'x2':>12} {'f(x2)':>14} {'ea(%)':>12}")
+    print("-"*80)
 
     ea_list, iter_list = [], []
     for i in range(1, max_iter+1):
@@ -101,14 +105,15 @@ def secant_method(x0, x1, tol=0.001, max_iter=100):
         denom = f1 - f0
         if denom == 0:
             break
-        x2 = x1 - f1*(x1 - x0)/denom
+        x2 =( x0*f1 - x1*f0)/denom
+        # x2 = x0 - f0*(x1 - x0)/denom
+        # x2 = x1 - f1*(x1 - x0)/denom
         fx2 = f(x2)
         ea = abs((x2 - x1)/x2) * 100
         ea_list.append(ea)
         iter_list.append(i)
         
-        print(f"{i:<6d} {x0:.5f}   {x1:.5f}   {x2:.5f}   {fx2:.5f}   {ea:.5f}")
-        
+        print(f"{i:>6d} {x0:>12.5f} {x1:>12.5f} {x2:>12.5f} {fx2:>14.5f} {ea:>12.5f}")        
         if ea < tol:
             break
         x0, x1 = x1, x2
@@ -130,7 +135,7 @@ plt.plot(iter_sec, err_sec, marker='d', label="Secant")
 plt.xlabel("Iterations")
 plt.ylabel("Approx. Relative Error (%)")
 plt.title("Comparison of Root-Finding Methods")
-plt.yscale("log")  # log scale for better visualization
+# plt.yscale("log")  # log scale for better visualization
 plt.legend()
 plt.grid(True)
 plt.show()
