@@ -1,14 +1,12 @@
 import numpy as np
 
-# Given data
-x_data = np.array([0, 1, 2.5, 3, 4.5, 5, 6], dtype=float)
-y_data = np.array([2.0, 5.43750, 7.35160, 7.56250, 8.44530, 9.18750, 12.0], dtype=float)
+x_data = np.array([0, 1, 2.5, 3, 4.5, 5, 6])
+y_data = np.array([2.00000, 5.43750, 7.35160, 7.56250, 8.44530, 9.18750, 12.00000])
 
-# For local accuracy near x = 3.5, choose nodes closest to 3.5
-# Order by distance from 3.5: 3, 4.5, 2.5, 5
-nodes_indices = [3, 4, 2, 5]
-x_nodes = x_data[nodes_indices]
-y_nodes = y_data[nodes_indices]
+target_x = 3.5  
+
+distances = np.abs(x_data - target_x)
+sorted_indices = np.argsort(distances)
 
 def divided_diff_table(x_nodes, y_nodes):
     n = len(x_nodes)
@@ -28,17 +26,22 @@ def newton_poly(x_nodes, table, x):
         P += table[0,j] * prod
     return P
 
-# Compute divided difference table
-table = divided_diff_table(x_nodes, y_nodes)
-print("Divided difference table:")
-print(np.round(table, 8))
-
-# Evaluate Newton polynomial at x = 3.5 for k=2,3,4
 Nk_values = []
-for k in [2,3,4]:
-    Nk = newton_poly(x_nodes[:k+1], table, 3.5)
+degrees = [2, 3, 4] 
+for k in degrees:
+    node_indices = sorted_indices[:k+1]
+    x_nodes = x_data[node_indices]
+    y_nodes = y_data[node_indices]
+    
+    table = divided_diff_table(x_nodes, y_nodes)
+    
+    # print(f"\nDivided difference table for degree {k}:")
+    # print(np.round(table, 8))
+    
+    Nk = newton_poly(x_nodes, table, target_x)
     Nk_values.append(Nk)
+
 print("\nNewton polynomial evaluations at x=3.5:")
 for i, Nk in enumerate(Nk_values):
     delta = abs(Nk - Nk_values[i-1]) if i>0 else 0
-    print(f"N{i+2}(3.5) = {Nk:.6f}, delta = {delta:.6f}")
+    print(f"N{degrees[i]}(3.5) = {Nk:.6f}, delta = {delta:.6f}")
